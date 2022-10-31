@@ -1,12 +1,12 @@
-const Usuario = require("../model/usuario.model");
-const { validaData } = require("../helpers/validar");
+const Usuario = require("../model/usuario.model")
+const { validaData } = require("../helpers/validar")
 
 
 const prueba = (req, res) => {
   return res.status(200).json({
     mensaje: "Hola mundo desde usuarioController",
-  });
-};
+  })
+}
 
 const crear = (req, res) => {
   let data = req.body;
@@ -33,14 +33,34 @@ const crear = (req, res) => {
       data
     });
   });
-};
+}
+
+const listar = (req, res) => {
+  Usuario.find({}).exec((error, usuario)=>{
+    if (error || !usuario) {
+      return res.status(404).json({
+        status: "error",
+        mensaje: "No se han encontrado articulos",
+      })
+    }
+    return res.status(200).json({
+      status: "success",
+      usuario 
+    })
+  })
+  
+}
 
 module.exports = {
   prueba,
   crear,
+  listar
 };
 
 /**
- * @param {validaData} validar los datos ingresado utilizando la librería validator
- * @param {save} Guarda las información en la Base de Datos mediante la librería de mongoose
+ * @param {validaData} validar los datos ingresado utilizando la librería validator.
+ * @param {save} Guarda las información en la Base de Datos mediante la librería de mongoose.
+ * @param {find} Crea un conjunto de filtros para la búsqueda. 
+ * @param {exec} Consulta la BDD y devuelve un listado.
+ * @param {sort} para poder ordenar una lista.
  */
