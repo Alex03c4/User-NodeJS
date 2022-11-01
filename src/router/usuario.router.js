@@ -7,6 +7,7 @@ router.get("/prueba", UsuarioController.prueba)
 router.post("/crear", UsuarioController.crear)
 router.get("/listar", UsuarioController.listar)
 router.get("/buscar/:id", UsuarioController.buscar)
+router.delete("/eliminar/:id", UsuarioController.eliminar)
 
 
 module.exports = router

@@ -67,11 +67,29 @@ const buscar = (req, res) => {
   })
 }
 
+const eliminar = (req, res) => {
+  let id = req.params.id 
+  Usuario.findByIdAndDelete({ _id: id }, (error, usuarioBorrado) => {
+    if (error || !usuarioBorrado) {
+      return res.status(500).json({
+        status: "error",
+        mensaje: "Error al borrar el articulo",
+      })
+    }
+    return res.status(200).json({
+      status: "success",
+      usuarioBorrado
+    })
+  })
+}
+
+
 module.exports = {
   prueba,
   crear,
   listar,
-  buscar
+  buscar,
+  eliminar
 };
 
 /**
