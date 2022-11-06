@@ -1,7 +1,6 @@
 const Usuario = require("../model/usuario.model")
 const { validaData } = require("../helpers/validar")
 
-
 const prueba = (req, res) => {
   return res.status(200).json({
     mensaje: "Hola mundo desde usuarioController",
@@ -83,13 +82,47 @@ const eliminar = (req, res) => {
   })
 }
 
+const actualizar = (req, res) => {
+  let id = req.params.id
+  let data = req.body
+
+  try {
+    validaData(data)
+  } catch (error) {
+    return res.status(400).json({
+      status: "error",
+      mensaje: "Faltan datos por enviar",
+    })
+  }
+  
+  Usuario.findOneAndUpdate(
+    { _id: id },
+    req.body,
+    { new: true },
+    (error, usuarioActualizado) => {
+      if (error || !usuarioActualizado) {
+        return res.status(500).json({
+          status: "error",
+          mensaje: "Error al actualizar",
+        })
+      }
+
+      return res.status(200).json({
+        status: "success",
+        articulo: usuarioActualizado,
+      })
+    }
+  )  
+}
+
 
 module.exports = {
   prueba,
   crear,
   listar,
   buscar,
-  eliminar
+  eliminar,
+  actualizar
 };
 
 /**
@@ -98,5 +131,7 @@ module.exports = {
  * @param {find} Crea un conjunto de filtros para la búsqueda. 
  * @param {exec} Consulta la BDD y devuelve un listado.
  * @param {sort} para poder ordenar una lista.
- * @param {params} consigue el parámetro enviado por la url 
+ * @param {findById} filtra una búsqueda de un elemento por medio de un id.
+ * @param {findByIdAndDelete} Elimina un elemento de la BDD.
+ * @param {params} consigue el parámetro enviado por la url.
  */
