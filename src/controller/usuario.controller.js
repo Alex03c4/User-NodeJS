@@ -1,3 +1,5 @@
+const fs = require("fs"); //imagen
+const path = require("path");
 const Usuario = require("../model/usuario.model")
 const { validaData } = require("../helpers/validar")
 
@@ -115,6 +117,72 @@ const actualizar = (req, res) => {
   )  
 }
 
+const subirImagen = (req, res) => {
+  if (!req.file && !req.files) {
+    return res.status(404).json({
+      status: "error",
+      mensaje: "Petición invalida",
+    })
+  }
+
+  let archivo = req.file.originalname
+  let archivo_split = archivo.split(".")
+  let extension = archivo_split[1]
+
+  if (
+    extension != "png" &&
+    extension != "jpg" &&
+    extension != "jpeg" &&
+    extension != "gif"
+  ) {
+    fs.unlink(req.file.path, (error) => {
+      return res.status(400).json({
+        status: "error",
+        mensaje: "Imagen invalida",
+      })
+    })
+  } else {
+
+    let id = req.params.id
+    Usuario.findOneAndUpdate(
+      { _id: id },
+      { imagen: req.file.filename },
+      { new: true },
+      (error, usuarioActualizado) => {
+        if (error || !usuarioActualizado) {
+          return res.status(500).json({
+            status: "error",
+            mensaje: "Error al actualizar",
+          });
+        }
+
+        return res.status(200).json({
+          status: "success",
+          articulo: usuarioActualizado,
+          fichero: req.file,
+        });
+      }
+    );
+  }
+}
+
+const buscarImagen = (req, res) => {
+  let fichero = req.params.fichero;
+  let ruta = "./public/img/usuario/" + fichero;
+  fs.stat(ruta, (error, existe) => {
+    if (existe) {
+      return res.sendFile(path.resolve(ruta));
+    } else {
+      return res.status(404).json({
+        status: "error",
+        mensaje: "La imagen no existe",
+        existe,
+        fichero,
+        ruta,
+      })
+    }
+  })
+}
 
 module.exports = {
   prueba,
@@ -122,7 +190,9 @@ module.exports = {
   listar,
   buscar,
   eliminar,
-  actualizar
+  actualizar,
+  subirImagen,
+  buscarImagen
 };
 
 /**
@@ -133,5 +203,8 @@ module.exports = {
  * @param {sort} para poder ordenar una lista.
  * @param {findById} filtra una búsqueda de un elemento por medio de un id.
  * @param {findByIdAndDelete} Elimina un elemento de la BDD.
+ * @param {findOneAndUpdate} Actualiza los datos de una BDD.
  * @param {params} consigue el parámetro enviado por la url.
+ * @param {unlink} elimina un archivo-
+ * @param {path} busca el archivo para luego enviarlo 
  */
