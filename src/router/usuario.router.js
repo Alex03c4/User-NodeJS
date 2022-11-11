@@ -11,9 +11,9 @@ const guardarImagen = multer.diskStorage({
     filename: function(req, file, cb){
         cb(null, "User:"+ Date.now() +":"+ file.originalname)
     }
-});
+})
 
-const subidas = multer({storage: guardarImagen});
+const subidas = multer({storage: guardarImagen})
 
 router.get("/prueba", UsuarioController.prueba)
 router.post("/crear", UsuarioController.crear)
@@ -23,6 +23,7 @@ router.delete("/eliminar/:id", UsuarioController.eliminar)
 router.put("/actualizar/:id", UsuarioController.actualizar);
 router.post("/subirImagen/:id", [subidas.single("file0")], UsuarioController.subirImagen)
 router.get("/buscarImagen/:fichero", UsuarioController.buscarImagen)
+router.get("/buscarUser/:busqueda", UsuarioController.buscadorUser)
 
 
 module.exports = router

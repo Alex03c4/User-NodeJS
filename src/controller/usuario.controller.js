@@ -41,7 +41,7 @@ const listar = (req, res) => {
     if (error || !usuario) {
       return res.status(404).json({
         status: "error",
-        mensaje: "No se han encontrado articulos",
+        mensaje: "No se han encontrado el usuario",
       })
     }
     return res.status(200).json({
@@ -184,6 +184,31 @@ const buscarImagen = (req, res) => {
   })
 }
 
+const buscadorUser = (req, res) => {
+  let busqueda = req.params.busqueda;
+
+  Usuario.find({
+    $or: [
+      { nombre:   { $regex: busqueda, $options: "i" } },
+      { apellido: { $regex: busqueda, $options: "i" } },
+    ],
+  })
+    .sort({ fecha: -1 })
+    .exec((error, userEncontrados) => {
+      if (error || !userEncontrados || userEncontrados.length <= 0) {
+        return res.status(404).json({
+          status: "error",
+          mensaje: "No se han encontrado Usuario",
+        })
+      }
+
+      return res.status(200).json({
+        status: "success",
+        userEncontrados
+      })
+    })
+}
+
 module.exports = {
   prueba,
   crear,
@@ -192,8 +217,9 @@ module.exports = {
   eliminar,
   actualizar,
   subirImagen,
-  buscarImagen
-};
+  buscarImagen,
+  buscadorUser,
+}
 
 /**
  * @param {validaData} validar los datos ingresado utilizando la librería validator.
