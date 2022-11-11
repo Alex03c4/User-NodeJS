@@ -1,0 +1,9 @@
+// Comandos para una instalación en NPM desde 0
+npm init
+npm install express --save      //Para Crear el servidor
+npm install mongoose --seve     //Para hacer la Conexiones a Mongo              
+npm install multer --seve       //Para subir archivos como Fotos 
+npm install validator --seve    //Para Validar los datos  
+npm install cors --seve         //Para el hacedor entre dominio
+npm install nodemon --seve-dev  //Para Actualizar el Servido en cualquier cambio
+npm start
