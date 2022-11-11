@@ -117,7 +117,7 @@ const actualizar = (req, res) => {
   )  
 }
 
-const subirImagen = (req, res) => {
+const subirImagen  = (req, res) => { 
   if (!req.file && !req.files) {
     return res.status(404).json({
       status: "error",
